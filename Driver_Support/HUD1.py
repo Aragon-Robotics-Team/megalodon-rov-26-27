@@ -7,7 +7,7 @@ height = round(int(camera.get(cv2.CAP_PROP_FRAME_HEIGHT))/2)
 pt = [(width-35,height),(width-20,height),(width-10,height+15),(width,height),(width+10,height+15),(width+20,height),(width+35,height)]
 roll = 0
 pitch = 0
-depth = 12
+depth = 0
 a = -85
 zoom = 24
 print(height)
@@ -16,7 +16,7 @@ def endpoint(dist, roll1, pitch1):
 while True:
     roll = 0
     pitch = 0
-    depth = (20 * math.sin(time.time())) + 60
+    depth = 0
     a = -85
     ret, frame = camera.read()
     cv2.line(frame, pt[0], pt[1], (0, 255, 0), 3, 1)

@@ -1,6 +1,6 @@
 import cv2
 import math
-import time
+import serial
 camera = cv2.VideoCapture(0)
 width = round(int(camera.get(cv2.CAP_PROP_FRAME_WIDTH))/2)
 height = round(int(camera.get(cv2.CAP_PROP_FRAME_HEIGHT))/2)
@@ -10,12 +10,34 @@ pitch = 0
 depth = 0
 a = -85
 zoom = 24
-print(height)
+cereal = serial.Serial("/dev/cu.usbmodem1101", 115200, timeout=10)
+def extract():
+    cereal.reset_input_buffer()
+    line = cereal.readline().decode('utf-8').strip()
+    complete = line.__contains__("s+") and line.__contains__("!e")
+    if not complete:
+        #print("bad data")
+        extract()
+    else:
+        try:
+            _, leftover = line.split("+")
+            data1, _ = leftover.split("!")
+            x, data2 = data1.split(":")
+            y, z = data2.split(";")
+            x = float(x)
+            y = float(y)
+            z = float(z)
+        except ValueError:
+            pass
+    if complete:
+        print(str(x) + ", " + str(y) + ", " + str(z))
+        return x, y, z
 def endpoint(dist, roll1, pitch1):
     return (round(width + (dist * math.cos(roll1)) - (math.sin(roll1) * ((pitch1 + a) * zoom))),round(height + (math.cos(roll1) * ((pitch1 + a) * zoom)) + (dist * math.sin(roll1))))
 while True:
-    roll = 0
-    pitch = 0
+    x, y, z = extract()
+    roll = math.atan2(-y, z)
+    pitch = math.degrees(math.atan2(x, math.sqrt((y**2) + (z**2))))
     depth = 0
     a = -85
     ret, frame = camera.read()

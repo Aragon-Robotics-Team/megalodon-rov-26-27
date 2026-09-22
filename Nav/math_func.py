@@ -3,7 +3,7 @@ def PWM(joyVal): #converting a double to a PWM value
     joyVal = joyVal*Limit
     return joyVal
 
-def makeString(Lx, Ly, Rx, A, B, C, D, throttle_y, throttle_x, percent_horiz=100, percent_vert=100):
+def makeString(Lx, Ly, Rx, A, B, C, D, throttle_y, throttle_x, pwm_limit=400, percent_horiz=100, percent_vert=100):
     #Lx-Double/float, Ly-Double/float, Rx-Double/float, A-Boolean, B-Boolean, "Sensitive Mode" - Boolean
     vtr = vtl = vbr = vbl = fr = fl = br = bl = 1500
     servo = 0
@@ -91,8 +91,8 @@ def makeString(Lx, Ly, Rx, A, B, C, D, throttle_y, throttle_x, percent_horiz=100
     for index in range(len(pwmArray)):
         # round to whole number
         pwmArray[index] = round(pwmArray[index])
-        pwmArray[index] = max(1100, pwmArray[index])
-        pwmArray[index] = min(1900, pwmArray[index])
+        pwmArray[index] = max(1500-pwm_limit, pwmArray[index])
+        pwmArray[index] = min(1500+pwm_limit, pwmArray[index])
 
     vtr = vtl = vbr = vbl = fr = fl = br = 1500
 

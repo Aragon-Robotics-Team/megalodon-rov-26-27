@@ -10,14 +10,16 @@ pitch = 0
 depth = 0
 a = -85
 zoom = 24
+xProcess = [0, 0, 0, 0, 0]
+yProcess = [0, 0, 0, 0, 0]
+zProcess = [0, 0, 0, 0, 0]
 cereal = serial.Serial("/dev/cu.usbmodem1101", 115200, timeout=10)
 def extract():
     cereal.reset_input_buffer()
     line = cereal.readline().decode('utf-8').strip()
     complete = line.__contains__("s+") and line.__contains__("!e")
     if not complete:
-        #print("bad data")
-        extract()
+        return extract()
     else:
         try:
             _, leftover = line.split("+")
@@ -30,12 +32,29 @@ def extract():
         except ValueError:
             pass
     if complete:
-        print(str(x) + ", " + str(y) + ", " + str(z))
         return x, y, z
 def endpoint(dist, roll1, pitch1):
     return (round(width + (dist * math.cos(roll1)) - (math.sin(roll1) * ((pitch1 + a) * zoom))),round(height + (math.cos(roll1) * ((pitch1 + a) * zoom)) + (dist * math.sin(roll1))))
 while True:
     x, y, z = extract()
+    xProcess[0] = xProcess[1]
+    xProcess[1] = xProcess[2]
+    xProcess[2] = xProcess[3]
+    xProcess[3] = xProcess[4]
+    xProcess[4] = x
+    yProcess[0] = yProcess[1]
+    yProcess[1] = yProcess[2]
+    yProcess[2] = yProcess[3]
+    yProcess[3] = yProcess[4]
+    yProcess[4] = y
+    zProcess[0] = zProcess[1]
+    zProcess[1] = zProcess[2]
+    zProcess[2] = zProcess[3]
+    zProcess[3] = zProcess[4]
+    zProcess[4] = z
+    x = (xProcess[0] + xProcess[1] + xProcess[2] + xProcess[3] + xProcess[4])/5
+    y = (yProcess[0] + yProcess[1] + yProcess[2] + yProcess[3] + yProcess[4])/5
+    z = (zProcess[0] + zProcess[1] + zProcess[2] + zProcess[3] + zProcess[4])/5
     roll = math.atan2(-y, z)
     pitch = math.degrees(math.atan2(x, math.sqrt((y**2) + (z**2))))
     depth = 0
@@ -60,7 +79,7 @@ while True:
     cv2.rectangle(frame, (1710, 700), (1850, 680), (0, 255, 0), 3, 1)
     cv2.line(frame, (1710, 380), (1710, 700), (0, 255, 0), 3, 1)
     cv2.line(frame, (1850, 380), (1850, 700), (0, 255, 0), 3, 1)
-    while a < 85:
+    while a < 90:
         if a == 0:
             start = endpoint(50, roll, pitch)
             end = endpoint(500, roll, pitch)

@@ -95,7 +95,7 @@ void loop() {
   Serial.print(":");
   Serial.print(a.acceleration.y);
   Serial.print(";");
-  Serial.print(a.acceleration.z)
+  Serial.print(a.acceleration.z);
   Serial.println("!e");
   Serial.println("");
   delay(50);

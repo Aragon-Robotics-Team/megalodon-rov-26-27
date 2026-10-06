@@ -85,7 +85,7 @@ def nav():
 
             # print("constructing message to send to arduino")
             # construct string, send to arduino, received info back
-            messageToSend = math_func.makeString(Lx, Ly, Rx, A, B, C, D, throttle_y, throttle_x).encode("ascii")
+            messageToSend = math_func.makeString(Lx, Ly, Rx, A, B, C, D, throttle_y, throttle_x, 180).encode("ascii")
 
             try:
                 arduino.write(messageToSend) 

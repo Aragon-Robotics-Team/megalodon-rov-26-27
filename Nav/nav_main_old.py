@@ -8,7 +8,7 @@ OFFSET = 0.161498
 
 # CHANGE PORT ACCORDINGLY
 # /dev/cu.usbmodem21301 for Mac
-arduino = Serial('COM3', 9600)
+arduino = Serial('COM13', 9600)
 
 pygame.init()
 pygame.joystick.init()
@@ -80,7 +80,7 @@ while loop:
         throttle_x = message[4]
 
         # construct string, send to arduino, received info back
-        messageToSend = (math_func.makeString(Lx, Ly, Rx, A, B, C, D, throttle_y, throttle_x)).encode("ascii")
+        messageToSend = (math_func.makeString(Lx, Ly, Rx, A, B, C, D, throttle_y, throttle_x, 180)).encode("ascii")
         # messageToSend = b"1500-1500=1500+1500*1500,1500]1500/1500.0!\r\n"
         # print(messageToSend)
         arduino.write(messageToSend) 

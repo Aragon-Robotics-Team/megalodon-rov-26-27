@@ -3,7 +3,7 @@ def PWM(joyVal): #converting a double to a PWM value
     joyVal = joyVal*Limit
     return joyVal
 
-def makeString(Lx, Ly, Rx, A, B, C, D, throttle_y, throttle_x, percent_horiz=100, percent_vert=100):
+def makeString(Lx, Ly, Rx, A, B, C, D, throttle_y, throttle_x, pwm_limit=400, percent_horiz=100, percent_vert=100):
     #Lx-Double/float, Ly-Double/float, Rx-Double/float, A-Boolean, B-Boolean, "Sensitive Mode" - Boolean
     vtr = vtl = vbr = vbl = fr = fl = br = bl = 1500
     servo = 0
@@ -28,8 +28,6 @@ def makeString(Lx, Ly, Rx, A, B, C, D, throttle_y, throttle_x, percent_horiz=100
         throttle_x = 0
     if(throttle_y < 0.1 and throttle_y > -0.1):
         throttle_y = 0
-
-
 
     #LINEAR MODE
     # Front and Back Calculations
@@ -58,13 +56,13 @@ def makeString(Lx, Ly, Rx, A, B, C, D, throttle_y, throttle_x, percent_horiz=100
     #up-down movement
     if(A): #if A is pressed
         vtr += Vstrength
-        vtl += Vstrength * 0.9
+        vtl += Vstrength #* 0.9 -- Why are these here?
         vbr += Vstrength
         vbl += Vstrength
         #v1 and v2 go up
     if(B): #if B is pressed
         vtr -= Vstrength
-        vtl -= Vstrength * 0.9
+        vtl -= Vstrength #* 0.9
         vbr -= Vstrength
         vbl -= Vstrength
         #v1 and v2 go down
@@ -84,15 +82,22 @@ def makeString(Lx, Ly, Rx, A, B, C, D, throttle_y, throttle_x, percent_horiz=100
     # servo claw
     servo += C - D
 
-
-
+    sf = min(1, (1440 / abs(fr - 1500) + abs(fl - 1500) + abs(br - 1500) + abs(bl - 1500) + abs(vtr - 1500) + abs(vtl - 1500) + abs(vbr - 1500) + abs(vbl - 1500)))
+    fr = ((fr - 1500) * sf) + 1500
+    fl = ((fl - 1500) * sf) + 1500
+    br = ((br - 1500) * sf) + 1500
+    bl = ((bl - 1500) * sf) + 1500
+    vtr = ((vtr - 1500) * sf) + 1500
+    vtl = ((vtl - 1500) * sf) + 1500
+    vbr = ((vbr - 1500) * sf) + 1500
+    vbl = ((vbl - 1500) * sf) + 1500
     #capping the pwm values at 1900/1100 and round
     pwmArray = [fr, fl, br, bl, vtr, vtl, vbr, vbl]
     for index in range(len(pwmArray)):
         # round to whole number
         pwmArray[index] = round(pwmArray[index])
-        pwmArray[index] = max(1100, pwmArray[index])
-        pwmArray[index] = min(1900, pwmArray[index])
+        pwmArray[index] = max(1500-pwm_limit, pwmArray[index])
+        pwmArray[index] = min(1500+pwm_limit, pwmArray[index])
 
     vtr = vtl = vbr = vbl = fr = fl = br = 1500
 

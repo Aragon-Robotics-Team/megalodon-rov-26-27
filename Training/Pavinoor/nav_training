@@ -1,0 +1,106 @@
+def pwm_converter(joystick):
+    return joystick * 400
+
+Ly = 0
+Lx = 0
+Rx = 0
+A = 0
+B = 0
+horizontal_scaling = 1
+vertical_scaling = 1
+
+def movement(Ly,Lx,Rx,A,B,horizontal_scaling,vertical_scaling):
+
+    #horizontal thrusters
+    horizontal_frontleft = 1500
+    horizontal_frontright = 1500
+    horizontal_bottomleft = 1500
+    horizontal_bottomright = 1500
+
+    #vertical thrusters
+    vertical_frontleft = 1500
+    vertical_frontright = 1500
+    vertical_bottomleft = 1500
+    vertical_bottomright = 1500 
+
+    #deadband
+    if (-0.1 <= Ly <= 0.1):
+        Ly = 0
+
+    if (-0.1 <= Lx <= 0.1):
+        Lx = 0
+
+    if (-0.1 <= Rx <= 0.1):
+        Rx = 0
+
+    #scaling percentage
+    Ly *= horizontal_scaling
+    Lx *= horizontal_scaling
+    Rx *= horizontal_scaling
+    A *= vertical_scaling
+    B *= vertical_scaling
+
+    #forwards/backwards
+    horizontal_frontleft += pwm_converter(Ly)
+    horizontal_frontright += pwm_converter(Ly)
+    horizontal_bottomleft += pwm_converter(Ly)
+    horizontal_bottomright += pwm_converter(Ly)
+
+    #sidetoside
+    horizontal_frontleft += pwm_converter(Lx)
+    horizontal_frontright += pwm_converter(Lx)
+    horizontal_bottomleft += pwm_converter(Lx)
+    horizontal_bottomright += pwm_converter(Lx)
+    
+    #rotation
+    horizontal_frontleft += pwm_converter(Rx)
+    horizontal_frontright += pwm_converter(Rx)
+    horizontal_bottomleft += pwm_converter(Rx)
+    horizontal_bottomright += pwm_converter(Rx)
+
+    #pwm parameters
+    if (horizontal_frontleft < 1100):
+        horizontal_frontleft = 1100
+
+    if (horizontal_frontright < 1100):
+        horizontal_frontright = 1100
+        
+    if (horizontal_bottomleft < 1100):
+        horizontal_bottomleft = 1100
+
+    if (horizontal_bottomright < 1100):
+        horizontal_bottomright = 1100
+
+    if (horizontal_frontleft > 1900):
+        horizontal_frontleft = 1900
+
+    if (horizontal_frontright > 1900):
+        horizontal_frontright = 1900
+        
+    if (horizontal_bottomleft > 1900):
+        horizontal_bottomleft = 1900
+        
+    if (horizontal_bottomright > 1900):
+        horizontal_bottomright = 1900
+
+
+    #upward movement
+    if (A==1):
+        vertical_frontleft = 1900
+        vertical_frontright = 1900
+        vertical_bottomleft = 1900
+        vertical_bottomright = 1900 
+
+    #downward movement
+    if (B==1):
+        vertical_frontleft = 1900
+        vertical_frontright = 1900
+        vertical_bottomleft = 1900
+        vertical_bottomright = 1900 
+
+    #arduino string
+    arduino_string = (horizontal_frontleft + "/" + horizontal_frontright + "+" + horizontal_bottomleft
+                      + "=" + horizontal_bottomright + "}" + vertical_frontleft + "-" + vertical_frontright
+                      + "*" + vertical_bottomleft + "," + vertical_bottomright)
+
+

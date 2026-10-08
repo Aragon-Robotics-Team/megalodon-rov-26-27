@@ -1,7 +1,7 @@
 def pwm_converter(joystick):
     return joystick * 400
 
-def movement(Ly,Lx,Rx,A,B,horizontal_scaling,vertical_scaling):
+def movement(Ly,Lx,Rx,A,B,horizontal_scaling=1,vertical_scaling=1):
 
     #horizontal thrusters
     horizontal_frontleft = 1500
@@ -40,15 +40,15 @@ def movement(Ly,Lx,Rx,A,B,horizontal_scaling,vertical_scaling):
 
     #sidetoside
     horizontal_frontleft += pwm_converter(Lx)
-    horizontal_frontright += pwm_converter(Lx)
-    horizontal_bottomleft += pwm_converter(Lx)
+    horizontal_frontright -= pwm_converter(Lx)
+    horizontal_bottomleft -= pwm_converter(Lx)
     horizontal_bottomright += pwm_converter(Lx)
     
     #rotation
     horizontal_frontleft += pwm_converter(Rx)
-    horizontal_frontright += pwm_converter(Rx)
+    horizontal_frontright -= pwm_converter(Rx)
     horizontal_bottomleft += pwm_converter(Rx)
-    horizontal_bottomright += pwm_converter(Rx)
+    horizontal_bottomright -= pwm_converter(Rx)
 
     #pwm parameters
     if (horizontal_frontleft < 1100):
@@ -85,10 +85,10 @@ def movement(Ly,Lx,Rx,A,B,horizontal_scaling,vertical_scaling):
 
     #downward movement
     if (B==1):
-        vertical_frontleft = 1900
-        vertical_frontright = 1900
-        vertical_bottomleft = 1900
-        vertical_bottomright = 1900 
+        vertical_frontleft = 1100
+        vertical_frontright = 1100
+        vertical_bottomleft = 1100
+        vertical_bottomright = 1100 
 
     #arduino string
     arduino_string = (str(horizontal_frontleft) + "/" + str(horizontal_frontright) + "+" + str(horizontal_bottomleft)
@@ -96,4 +96,4 @@ def movement(Ly,Lx,Rx,A,B,horizontal_scaling,vertical_scaling):
                       + "*" + str(vertical_bottomleft) + "," + str(vertical_bottomright))
     print(arduino_string)
 
-movement(1,0,0,0,0,1,1)
+movement(0,0,0,1,0)

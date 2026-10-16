@@ -1,5 +1,6 @@
 import pygame
 from time import sleep
+import nav_training
 pygame.init()
 pygame.joystick.init()
 
@@ -111,7 +112,7 @@ while loop:
     joystick_count = pygame.joystick.get_count()
    # print(joystick_count)
     for i in range(joystick_count):
-        joystick = pygame.joystick.Joystick(0)
+        joystick = pygame.joystick.Joystick(i)
         joystick.init()
        # print(joystick)
         for axes in range(joystick.get_numaxes()):
@@ -122,5 +123,8 @@ while loop:
             message.append(joystick.get_button(buttons))
    # sleep(1)
     pygame.time.Clock().tick(60)
-    print(movement(message[0],message[1]*-1,message[3],message[6],message[7]))
+  #  print(movement(message[0],message[1]*-1,message[3],message[6],message[7]))
+  print(nav_training.movement(message[0],message[1]*-1,message[3],message[6],message[7]))
 pygame.quit()
+
+# message = [Lx, Ly, Rx, A, B]

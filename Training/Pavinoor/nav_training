@@ -94,6 +94,6 @@ def movement(Ly,Lx,Rx,A,B,horizontal_scaling=1,vertical_scaling=1):
     arduino_string = (str(horizontal_frontleft) + "/" + str(horizontal_frontright) + "+" + str(horizontal_bottomleft)
                       + "=" + str(horizontal_bottomright) + "}" + str(vertical_frontleft) + "-" + str(vertical_frontright)
                       + "*" + str(vertical_bottomleft) + "," + str(vertical_bottomright))
-    print(arduino_string)
+    return arduino_string
 
 movement(0,0,0,1,0)

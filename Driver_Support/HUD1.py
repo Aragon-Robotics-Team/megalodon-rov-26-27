@@ -9,11 +9,11 @@ roll = 0
 pitch = 0
 depth = 0
 a = -85
-zoom = 24
+zoom = 16 # 16 for Matthew, 10 for Vihaan
 xProcess = [0, 0, 0, 0, 0]
 yProcess = [0, 0, 0, 0, 0]
 zProcess = [0, 0, 0, 0, 0]
-cereal = serial.Serial("/dev/cu.usbmodem1101", 115200, timeout=10)
+cereal = serial.Serial("/dev/cu.usbmodem11101", 115200, timeout=10)
 def extract():
     cereal.reset_input_buffer()
     line = cereal.readline().decode('utf-8').strip()

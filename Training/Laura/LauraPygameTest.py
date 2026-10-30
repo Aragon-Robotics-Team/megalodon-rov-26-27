@@ -33,15 +33,15 @@ while loop:
         # get AXIS values for joystick
         axes = joystick.get_numaxes()       # returns number of axes on joystick variable with each
                                             # with each axis corresponding to a stick or trigger
-        for i in range(axes):       # print axis values
-            message.append(joystick.get_axis(i))
-            print("Axis {} value: {}".format(i, joystick.get_axis(i)))
+        for j in range(axes):       # print axis values
+            message.append(joystick.get_axis(j))
+            print("Axis {} value: {}".format(j, joystick.get_axis(j)))
 
         # get BUTTON values for joystick
         buttons = joystick.get_numbuttons()
-        for i in range(buttons):    # print button values
-            message.append(joystick.get_button(i))
-            print("Button {} value: {}".format(i, joystick.get_button(i)))
+        for j in range(buttons):    # print button values
+            message.append(joystick.get_button(j))
+            print("Button {} value: {}".format(j, joystick.get_button(j)))
 
     # gotten from testing with xbox controller
     Lx = message[0]

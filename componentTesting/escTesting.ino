@@ -1,3 +1,6 @@
+// Arduino IDE for testing 1 ESC (making sure that flashing new settings onto ESC works correctly)
+// corresponds to escTesting.py
+
 #include <Servo.h>
 
 Servo motor;
@@ -15,8 +18,9 @@ void setup() {
 void loop() {
 
   if (Serial.available()) {
-
     PWM = Serial.readStringUntil('-').toInt();
+    motor.writeMicroseconds(PWM);
   }
   
+  delay(500);
 }

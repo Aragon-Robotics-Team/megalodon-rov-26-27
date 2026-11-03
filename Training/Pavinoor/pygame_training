@@ -1,6 +1,10 @@
 import pygame
 from time import sleep
 import nav_training
+import serial
+
+arduino = serial.Serial("/dev/cu.usbmodem21301", 9600) # port and baud rate
+
 pygame.init()
 pygame.joystick.init()
 
@@ -124,7 +128,22 @@ while loop:
    # sleep(1)
     pygame.time.Clock().tick(60)
   #  print(movement(message[0],message[1]*-1,message[3],message[6],message[7]))
-  print(nav_training.movement(message[0],message[1]*-1,message[3],message[6],message[7]))
+  messageToSend = (nav_training.movement(message[0],message[1]*-1,message[3],message[6],message[7]))
 pygame.quit()
 
 # message = [Lx, Ly, Rx, A, B]
+# your code for getting button values in while loop...
+
+ # new code for sending the PWM values to arduino inside
+ # the same while loop
+ #messageToSend = MathFunc.makeString(Lx, Ly, Rx, A, B, 100, 50)
+ messageToSend = messageToSend.encode("ascii")
+
+ arduino.write(messageToSend) 
+
+ received = arduino.readline().decode("ascii")
+ print(received)
+
+# outside while loop, make sure to have pygame.quit()
+# also add arduino.close()
+arduino.close()

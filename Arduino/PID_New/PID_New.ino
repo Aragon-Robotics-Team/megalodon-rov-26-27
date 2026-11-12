@@ -15,7 +15,7 @@ int movement_val = 3;
 int servo_pwm = 1450;
 Servo linear_servo;
 
-// need to wakw up teh sensor somewhere over here, dont know how t odo that
+// need to wake up the sensor somewhere over here, don't know how to do that
   float read_depth() {
     //i acc have zero idea how to right this, assuming we have the blue robotics one
     depthSensor.read();

@@ -4,16 +4,19 @@ import serial
 camera = cv2.VideoCapture(0)
 width = round(int(camera.get(cv2.CAP_PROP_FRAME_WIDTH))/2)
 height = round(int(camera.get(cv2.CAP_PROP_FRAME_HEIGHT))/2)
+#reticle pattern
 pt = [(width-35,height),(width-20,height),(width-10,height+15),(width,height),(width+10,height+15),(width+20,height),(width+35,height)]
 roll = 0
 pitch = 0
 depth = 0
 a = -85
 zoom = 16 # 16 for Matthew, 10 for Vihaan
+#for moving average filter
 xProcess = [0, 0, 0, 0, 0]
 yProcess = [0, 0, 0, 0, 0]
 zProcess = [0, 0, 0, 0, 0]
 cereal = serial.Serial("/dev/cu.usbmodem11101", 115200, timeout=10)
+#recieve serial data from MPU
 def extract():
     cereal.reset_input_buffer()
     line = cereal.readline().decode('utf-8').strip()
@@ -33,10 +36,12 @@ def extract():
             pass
     if complete:
         return x, y, z
+#generate points on horizons
 def endpoint(dist, roll1, pitch1):
     return (round(width + (dist * math.cos(roll1)) - (math.sin(roll1) * ((pitch1 + a) * zoom))),round(height + (math.cos(roll1) * ((pitch1 + a) * zoom)) + (dist * math.sin(roll1))))
 while True:
     x, y, z = extract()
+    #moving average
     xProcess[0] = xProcess[1]
     xProcess[1] = xProcess[2]
     xProcess[2] = xProcess[3]
@@ -55,17 +60,20 @@ while True:
     x = (xProcess[0] + xProcess[1] + xProcess[2] + xProcess[3] + xProcess[4])/5
     y = (yProcess[0] + yProcess[1] + yProcess[2] + yProcess[3] + yProcess[4])/5
     z = (zProcess[0] + zProcess[1] + zProcess[2] + zProcess[3] + zProcess[4])/5
+    #calculate attitude from MPU return
     roll = math.atan2(-y, z)
     pitch = math.degrees(math.atan2(x, math.sqrt((y**2) + (z**2))))
     depth = 0
     a = -85
     ret, frame = camera.read()
+    #generate reticle
     cv2.line(frame, pt[0], pt[1], (0, 255, 0), 3, 1)
     cv2.line(frame, pt[1], pt[2], (0, 255, 0), 3, 1)
     cv2.line(frame, pt[2], pt[3], (0, 255, 0), 3, 1)
     cv2.line(frame, pt[3], pt[4], (0, 255, 0), 3, 1)
     cv2.line(frame, pt[4], pt[5], (0, 255, 0), 3, 1)
     cv2.line(frame, pt[5], pt[6], (0, 255, 0), 3, 1)
+    #generate depth tape
     cv2.putText(frame, "Depth >", (1550, 552), cv2.FONT_HERSHEY_DUPLEX, 1.2, (0, 255, 0), 2 )
     cv2.putText(frame, str(depth - (depth % 10) - 20), (1720, 552 - 100 - round(5*(depth % 10))), cv2.FONT_HERSHEY_DUPLEX, 1.2, (0, 255, 0), 2 )
     cv2.putText(frame, str(depth - (depth % 10) - 10), (1720, 552 - 50 - round(5*(depth % 10))), cv2.FONT_HERSHEY_DUPLEX, 1.2, (0, 255, 0), 2 )
@@ -79,6 +87,7 @@ while True:
     cv2.rectangle(frame, (1710, 700), (1850, 680), (0, 255, 0), 3, 1)
     cv2.line(frame, (1710, 380), (1710, 700), (0, 255, 0), 3, 1)
     cv2.line(frame, (1850, 380), (1850, 700), (0, 255, 0), 3, 1)
+    #generate horizons
     while a < 90:
         if a == 0:
             start = endpoint(50, roll, pitch)
@@ -100,6 +109,7 @@ while True:
             b = str(-a)
             cv2.putText(frame, b, (round(width + (200 * math.cos(roll)) - (math.sin(roll) * ((pitch + a) * zoom))) - 30,round(height + (math.cos(roll) * ((pitch + a) * zoom)) + (200 * math.sin(roll))) + 10), cv2.FONT_HERSHEY_DUPLEX, 1.2, (0, 255, 0), 2)
         a += 5
+    #display overlaid frame
     cv2.imshow("finalCamera", frame)
     if cv2.waitKey(1) == ord('c'):
         cv2.destroyAllWindows()

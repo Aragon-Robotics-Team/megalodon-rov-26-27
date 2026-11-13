@@ -37,18 +37,25 @@ void loop() {
     if (Serial.available()) {
         int horizontal_frontleft_PWM = Serial.readStringUntil('/').toInt();
         horizontal_frontleft.writeMicroseconds(horizontal_frontleft_PWM);
+
         int horizontal_frontright_PWM = Serial.readStringUntil('+').toInt();
         horizontal_frontright.writeMicroseconds(horizontal_frontright_PWM);
+
         int horizontal_bottomleft_PWM = Serial.readStringUntil('=').toInt();
         horizontal_bottomleft.writeMicroseconds(horizontal_bottomleft_PWM);
+
         int horizontal_bottomright_PWM = Serial.readStringUntil('}').toInt();
         horizontal_bottomright.writeMicroseconds(horizontal_bottomright_PWM);
+
         int vertical_frontleft_PWM = Serial.readStringUntil('-').toInt();
         vertical_frontleft.writeMicroseconds(vertical_frontleft_PWM);
+
         int vertical_frontright_PWM = Serial.readStringUntil('*').toInt();
         vertical_frontright.writeMicroseconds(vertical_frontright_PWM);
+
         int vertical_bottomleft_PWM = Serial.readStringUntil(',').toInt();
         vertical_bottomleft.writeMicroseconds(vertical_bottomleft_PWM);
+        
         int vertical_bottomright_PWM = Serial.readStringUntil('\\').toInt();
         vertical_bottomright.writeMicroseconds(vertical_bottomright_PWM);
     }
